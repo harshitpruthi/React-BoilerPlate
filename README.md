@@ -1,8 +1,12 @@
-# A Complete Webpack Setup for React
+# React Boilerplate
 
 ![](images/webpack_babel.png)
 
-Minimal React Boilerplate with webpack,redux and code splitting
+# Features
+
+1.Complete Webpack setup
+2.Redux store setup
+3.Code splitting
 
 Steps to run the project -
 
