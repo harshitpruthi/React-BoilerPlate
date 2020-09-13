@@ -1,4 +1,20 @@
-# React-BoilerPlate
+# A Complete Webpack Setup for React
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Minimal React Boilerplate with webpack,redux and code splitting
 
