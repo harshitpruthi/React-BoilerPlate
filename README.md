@@ -8,7 +8,7 @@
 `Redux store setup`
 `Code splitting`
 
-Steps to run the project -
+# Steps to run the project -
 
 ### `npm install`
 
