@@ -4,9 +4,9 @@
 
 # Features
 
-1.Complete Webpack setup
-2.Redux store setup
-3.Code splitting
+## `Complete Webpack setup`
+## `Redux store setup`
+## `Code splitting`
 
 Steps to run the project -
 
