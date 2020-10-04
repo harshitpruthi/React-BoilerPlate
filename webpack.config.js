@@ -1,5 +1,8 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require("path");
+const workboxPlugin = require('workbox-webpack-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   module: {
@@ -55,6 +58,53 @@ module.exports = {
       },
     ],
   },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        // Uncomment lines below for cache invalidation correctly
+        cache: true,
+        cacheKeys: (defaultCacheKeys) => {
+          delete defaultCacheKeys.terser;
+
+          return Object.assign(
+            {},
+            defaultCacheKeys,
+            { 'uglify-js': require('uglify-js/package.json').version },
+          );
+        },
+        minify: (file, sourceMap) => {
+          // https://github.com/mishoo/UglifyJS2#minify-options
+          const uglifyJsOptions = {
+            /* your `uglify-js` package options */
+          };
+
+          if (sourceMap) {
+            uglifyJsOptions.sourceMap = {
+              content: sourceMap,
+            };
+          }
+
+          return require('uglify-js').minify(file, uglifyJsOptions);
+        },
+      }),
+    ],
+
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          // cacheGroupKey here is `commons` as the key of the cacheGroup
+          name(module, chunks, cacheGroupKey) {
+            const moduleFileName = module.identifier().split('/').reduceRight(item => item);
+            const allChunksNames = chunks.map((item) => item.name).join('~');
+            return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
+          },
+          chunks: 'all'
+        }
+      }
+    }
+  },
+
   devServer: {
     contentBase: "./build",
     hot: true,
@@ -78,11 +128,22 @@ module.exports = {
     },
     extensions: ['.js', '.jsx', '.css']
   },
-  devtool: "inline-source-map",
+  devtool: "false",
   plugins: [
     new HtmlWebPackPlugin({
-      template: "./src/index.html",
+      template: "./public/index.html",
       filename: "./index.html",
     }),
+    // new workboxPlugin.GenerateSW({
+    //   swDest: 'sw.js',
+    //   clientsClaim: true,
+    //   skipWaiting: true,
+    // }),
+    new BrotliPlugin({
+      asset: '[path].br[query]',
+      test: /\.(js|css|html|svg)$/,
+      threshold: 10240,
+      minRatio: 0.8
+    })
   ],
 };
